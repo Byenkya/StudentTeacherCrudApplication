@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  <meta charset="UTF-8">
+  <title>Student and Teacher Management</title>
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" 
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+</head>
+  <body>
+    <div id="main" style="margin-left: 450px; margin-right: 450px;"> 
+      <h1>Student and Teacher Management Application</h1><hr/>
+      <div id="updateForm" style="display: none;">
+        <h4>Update Student </h4>
+        <form id="change-form">
+          <input type="hidden" id="id">
+          <label for="name">Name:</label>
+          <input type="text" id="name" required>
+          <label for="surname">Surname:</label>
+          <input type="text" id="surname" required>
+          <input type="submit" value="Update" id="change-student-data" class="btn btn-primary">
+        </form>
+      </div><hr/>
+      <h3>List of Students</h3>
+      <table id="student-table" class="table table-striped table-bordered">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Surname</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <h4>Add Student</h4>
+      <form id="update-student-form">
+        <div class="form-group">
+          <label for="student-name">Name:</label>
+          <input type="text" class="form-control" id="student-name" aria-describedby="emailHelp">
+        </div>
+
+        <div class="form-group">
+          <label for="student-surname">Surname:</label>
+          <input type="text" class="form-control" id="student-surname" aria-describedby="emailHelp">
+        </div>
+
+        <button type="submit" id="add-student" class="btn btn-primary">Add Student</button>
+      </form>
+      <hr/>
+
+      <h3>Teachers</h3><hr/>
+      <div id="update-teacher-details">
+        <h4 id="update-title" class="text-primary"></h4>
+        <h6> Students attached to this teacher</h6>
+        <table id="students-attached" class="table table-striped table-bordered">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody class="text-primary"></tbody>
+        </table><hr/>
+        
+        <h4> Add more students to this teacher</h4>
+        <table id="add-more-students" class="table table-striped table-bordered">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <br/>
+        <form id="update-teacher">
+          <label for="update-teacher-name">Name:</label>
+          <input type="text" id="name" required>
+          <button type="submit" id="update-teacher" class="btn btn-primary">Update Teacher</button>
+        </form>
+        <hr/>
+      </div>
+      <h4>List of Teachers with their students</h4>
+      <table id="teacher-table" class="table table-striped table-bordered">
+        <thead>
+        <tr>
+          <th>ID</th>
+          <th>Name</th>
+          <th>Students</th>
+          <th></th>
+        </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <hr/>
+      <div id="add-teacherSection">
+        <h3>Add Teacher</h3>
+        <h6> Select Students To Add To Teacher </h6>
+        <!--  List of students to add  -->
+        <table id="students-to-add-table" class="table table-striped table-bordered">
+          <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Surname</th>
+            <th></th>
+          </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+        <br/>
+        <div id="select-students" style="display: none;">
+          <h3>The following are the students you have selected: </h3><hr/>
+          <table id="students-added" class="table table-striped table-bordered">
+            <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Surname</th>
+              <th></th>
+            </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+        <form>
+          <div class="form-group">
+            <label for="teacher-name">Name:</label>
+            <input type="text" class="form-control" id="teacher-name" aria-describedby="emailHelp">
+          </div>
+          <button type="submit" id="add-teacher" class="btn btn-primary">Add Teacher</button>
+        </form>
+      </div>
+    </div>
+    
+  
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+
+      var studentList = [];
+      var studentToBeAddedToTeacherList = [];
+      var allTeachers = [];
+      var selectedTeacher;
+
+      // Load students on page load
+      $(function() {
+        // Use Promises to ensure that both functions are executed in the correct order
+        loadStudents()
+          .then(function() {
+            console.log("Loaded students!");
+            return loadTeachers();
+          })
+          .then(function() {
+            console.log("Loaded teachers!");
+          })
+          .catch(function(error) {
+            console.error("An error occurred: " + error);
+          });
+      });
+
+      // Load students into table
+      function loadStudents() {
+        return new Promise(function(resolve, reject) {
+          $.ajax({
+            url: 'http://localhost:8080/students/',
+            type: 'GET',
+            success: function(students) {
+              studentList = students;
+              console.log(students);
+              students.forEach(function(student) {
+                $('#student-table tbody').append('<tr><td class="id">' + student.id + '</td><td class="name">' +
+                  student.name + '</td><td class="surname">' + student.surname +
+                  '</td><td><button class="update-student btn btn-secondary" data-id="' + student.id + '">Update</button></td>' +
+                  '<td><button class="delete-student btn btn-danger" data-id="' + student.id + '">Delete</button></td></tr>'
+                );
+              });
+              resolve();
+            },
+            error: function(error) {
+              reject(error);
+            }
+          });
+        });
+      }
+
+      // Load teachers into table
+      function loadTeachers() {
+        $.ajax({
+            url: 'http://localhost:8080/teachers/',
+            type: 'GET',
+            success: function(teachers) {
+                $('#update-teacher-details').hide();
+                allTeachers = teachers;
+                teachers.forEach(function(teacher) {
+                  var teacherStudentList = '';
+                  teacher.students.forEach(function(student) {
+                      const index = studentList.findIndex(std => std.id === student.id);
+                      if (index > -1) {
+                        studentList.splice(index, 1);
+                      }
+                      teacherStudentList += '<li>' + student.name + ' ' + student.surname + '</li>';
+                  });
+
+                  teacherStudentList = teacherStudentList.slice(0, -2);
+                  $('#teacher-table tbody').append(
+                    '<tr><td class="id">' + teacher.id + '</td><td>' + teacher.name + '</td><td><ul>' + teacherStudentList + 
+                    '</ul></td><td><button class="update-teacher btn btn-secondary" data-id="' + teacher.id + '">Update</button></td>' +
+                    '</ul></td><td><button class="delete-teacher btn btn-danger" data-id="' + teacher.id + '">Delete</button></td></tr>'
+                  );
+                });
+            
+                studentList.forEach(function(student) {
+                  $('#students-to-add-table tbody').append('<tr><td class="id">' + student.id + '</td><td class="name">' +
+                    student.name + '</td><td class="surname">' + student.surname +
+                    '<td><button class="add-student btn btn-primary" data-id="' + student.id + '">Add Student</button></td></tr>'
+                  );
+
+                });
+            }
+        });
+      }
+
+      // Add student on form submit
+      $('#add-student').on('click', function(event) {
+        event.preventDefault();
+        var name = $('#student-name').val();
+        var surname = $('#student-surname').val();
+
+        if(name !== "" && surname !== "") {
+          $.ajax({
+            url: 'http://localhost:8080/students/',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify({name: name, surname: surname}),
+            success: function(student) {
+                studentList.push(student);
+                $('#student-table tbody').append('<tr><td class="id">' + student.id + '</td><td class="name">' +
+                  student.name + '</td><td class="surname">' + student.surname +
+                  '</td><td><button class="update-student btn btn-secondary" data-id="' + student.id + '">Update</button></td>' +
+                  '<td><button class="delete-student btn btn-danger" data-id="' + student.id + '">Delete</button></td></tr>'
+                );
+
+                $('#students-to-add-table tbody').append('<tr><td class="id">' + student.id + '</td><td class="name">' +
+                    student.name + '</td><td class="surname">' + student.surname +
+                    '<td><button class="add-student btn btn-primary" data-id="' + student.id + '">Add Student</button></td></tr>'
+                );
+
+                $('#student-name').val('');
+                $('#student-surname').val('');
+            }
+          });
+        } else {
+          alert("name and surname are required");
+        }
+        
+      });
+
+      // Update student on button click
+      $('#student-table tbody').on('click', '.update-student', function(event){
+        // Find parent row element of clicked button
+        var row = $(this).closest('tr');
+
+        // Get input values from cells in row
+        var id = row.find('.id').text();
+        var name = row.find('.name').text();
+        var surname = row.find('.surname').text();
+
+        console.log(name);
+
+        // Populate update form with data
+        $('#change-form #id').val(id);
+        $('#change-form #name').val(name);
+        $('#change-form #surname').val(surname);
+
+        // Create JSON object with updated student data
+        var updatedStudent = {
+            'id': id,
+            'name': name,
+            'surname': surname
+        };
+
+        // Show the popup form
+        $('#updateForm').focus().show();
+        $('html, body').animate({
+            scrollTop: $('#updateForm').offset().top
+            }, 1000);
+
+      });
+
+      // Handle form submission i.e add student
+      $('#updateForm').on('submit', function(e) {
+          e.preventDefault();
+          var id = $('#id').val();
+          var name = $('#name').val();
+          var surname = $('#surname').val();
+
+          // Send AJAX request to server to update student data
+          $.ajax({
+            type: 'PUT',
+            url: 'http://localhost:8080/students/' + id,
+            contentType: 'application/json',
+            data: JSON.stringify({
+              name: name,
+              surname: surname
+            }),
+            success: function() {
+              // Hide the popup form and reload the table
+              $('#updateForm').hide();
+              location.reload();
+            }
+          });
+      });
+
+      // Delete student on button click
+      $('#student-table tbody').on('click', '.delete-student', function(event) {
+          var id = $(this).data('id');
+          $.ajax({
+              url: 'http://localhost:8080/students/' + id,
+              type: 'DELETE',
+              success: function() {
+                  location.reload();
+              }
+          });
+      });
+
+       // Add student to teacher list
+       $('#students-to-add-table tbody').on('click', '.add-student', function(event) {
+          // Find parent row element of clicked button
+          var row = $(this).closest('tr');
+
+          // Get input values from cells in row
+          var id = row.find('.id').text();
+          var name = row.find('.name').text();
+          var surname = row.find('.surname').text();
+
+          console.log(name);
+
+          // Create JSON object
+          var addStudent = {
+              'id': id,
+              'name': name,
+              'surname': surname
+          };
+
+          // Add student to teacher
+          studentToBeAddedToTeacherList.push(addStudent);
+
+          // remove student from the list of students waiting to be added to a teacher
+          console.log(studentList.length);
+          const index = studentList.findIndex(std => std.id === parseInt(id));
+          if (index > -1) {
+            studentList.splice(index, 1);
+          }
+
+          // remove the row of data
+          row.remove();
+
+          // added student
+          $('#students-added tbody').append(
+            '<tr><td class="id">' + id + '</td><td class="name">' + name + '</td><td class="surname">' + surname +
+            '<td><button class="remove-student btn btn-danger" data-id="' + id + '">Remove</button></td></tr>'
+          );
+
+          // show list
+          $('#select-students').show();
+
+       });
+
+      // remove student from teachers list
+      $('#students-added tbody').on('click', '.remove-student', function(event) {
+        // Find parent row element of clicked button
+        var row = $(this).closest('tr');
+
+        // Get input values from cells in row
+        var id = row.find('.id').text();
+        var name = row.find('.name').text();
+        var surname = row.find('.surname').text();
+
+        // added student back to studentList
+        var addBackStudent = {
+          'id': id,
+          'name': name,
+          'surname': surname
+        }
+
+        studentList.push(addBackStudent);
+
+        const index = studentToBeAddedToTeacherList.findIndex(std => std.id === id);
+        
+        if (index > -1) {
+          studentToBeAddedToTeacherList.splice(index, 1);
+        }
+        
+        row.remove();
+
+        $('#students-to-add-table tbody').append('<tr><td class="id">' + id + '</td><td class="name">' +
+          name + '</td><td class="surname">' + surname + '<td><button class="add-student btn btn-primary" data-id="' + 
+          id + '">Add Student</button></td></tr>'
+        );
+        
+        if(studentToBeAddedToTeacherList.length === 0) {
+          // hide the selected layout
+          $('#select-students').hide();
+        }
+      });
+
+      // Add a teacher 
+      $('#add-teacher').on('click', function(event) {
+        event.preventDefault();
+        var name = $('#teacher-name').val();
+
+        if(name !== "") {
+          $.ajax({
+            url: 'http://localhost:8080/teachers/',
+            type: 'POST',
+            contentType: 'application/json',
+            data: JSON.stringify(
+              {
+                'teacher': {'name': name}, 
+                'studentList': studentToBeAddedToTeacherList
+              }
+            ),
+            success: function() {
+                location.reload();
+            }
+          });
+        } else {
+          alert("Teacher's name is required");
+        }
+        
+      });
+
+      // update teacher 
+      $('#teacher-table tbody').on('click', '.update-teacher', function(event){
+        $('#add-teacherSection').hide();
+        $('#update-teacher-details').show();
+        // Find parent row element of clicked button
+        var row = $(this).closest('tr');
+
+        // Get input values from cells in row
+        var id = row.find('.id').text();
+
+        console.log(id)
+
+        var teacherDetails = allTeachers.find(tc => tc.id === parseInt(id));
+        selectedTeacher = teacherDetails;
+
+        $('#update-title').text("Update " + teacherDetails.name + ' Details');
+
+        console.log(teacherDetails.name)
+
+        // Populate update form with data
+        $('#update-teacher #name').val(teacherDetails.name);
+
+        // before populating, remove whatever is there
+        $('#students-attached tbody').empty();
+
+        // populate teacher's student
+        teacherDetails.students.forEach(function(student) {
+          $('#students-attached tbody').append(
+            '<tr><td class="id">' + student.id + '</td><td class="name">' +
+            student.name + '</td><td class="surname">' + student.surname + '<td><button class="removefrom-teacher btn btn-danger" data-id="' + 
+            student.id + '">Remove</button></td></tr>'
+          );
+        })
+
+        // more students that can be added to this teacher
+        $('#add-more-students tbody').empty();
+        studentList.forEach(function(student) {
+          $('#add-more-students tbody').append(
+            '<tr><td class="id">' + student.id + '</td><td class="name">' +
+              student.name + '</td><td class="surname">' + student.surname + '<td><button class="addTo-teacher btn btn-primary" data-id="' + 
+              student.id + '">Add</button></td></tr>'
+          );
+        });
+      })
+
+      $('#add-more-students tbody').on('click', '.addTo-teacher', function(event) {
+        // Find parent row element of clicked button
+        var row = $(this).closest('tr');
+
+        // Get input values from cells in row
+        var id = row.find('.id').text();
+        var name = row.find('.name').text();
+        var surname = row.find('.surname').text();
+
+        // added student back to studentList
+        var addToTeacherStudent = {
+          'id': id,
+          'name': name,
+          'surname': surname
+        }
+
+        const index = studentList.findIndex(std => std.id === parseInt(id));
+        if (index > -1) {
+          studentList.splice(index, 1);
+        }
+
+        selectedTeacher.students.push(addToTeacherStudent);
+
+        // added the student to the displayed list of the ones that belong to the teacher
+        $('#students-attached tbody').append(
+          '<tr><td class="id">' + id + '</td><td class="name">' +
+          name + '</td><td class="surname">' + surname + '<td><button class="removefrom-teacher btn btn-danger" data-id="' + 
+          id + '">Remove</button></td></tr>'
+        );
+
+        // remove the row of data
+        row.remove();
+      });
+
+      // remove student from teacher
+      $('#students-attached tbody').on('click', '.removefrom-teacher', function(event) {
+        // Find parent row element of clicked button
+        var row = $(this).closest('tr');
+
+        // Get input values from cells in row
+        var id = row.find('.id').text();
+        var name = row.find('.name').text();
+        var surname = row.find('.surname').text();
+
+        const index = selectedTeacher.students.findIndex(std => std.id === parseInt(id));
+        if (index > -1) {
+          selectedTeacher.students.splice(index, 1);
+        }
+
+        $('#add-more-students tbody').append(
+          '<tr><td class="id">' + id + '</td><td class="name">' +
+          name + '</td><td class="surname">' + surname + '<td><button class="addTo-teacher btn btn-primary" data-id="' + 
+          id + '">Add</button></td></tr>'
+        );
+
+        // remove row data
+        row.remove();
+      });
+
+      // Handle form submission i.e update teacher
+      $('#update-teacher').on('submit', function(e) {
+        event.preventDefault();
+        var name = $('#update-teacher #name').val();
+
+        if(name !== "") {
+          $.ajax({
+            url: 'http://localhost:8080/teachers/' + selectedTeacher.id,
+            type: 'PUT',
+            contentType: 'application/json',
+            data: JSON.stringify(
+              {
+                'teacher': {'name': name}, 
+                'studentList': selectedTeacher.students
+              }
+            ),
+            success: function() {
+                location.reload();
+            }
+          });
+        } else {
+          alert("Teacher's name is required");
+        }
+      });
+
+      // delete teacher
+      $('#teacher-table tbody').on('click', '.delete-teacher', function(event) {
+        // Find parent row element of clicked button
+        var row = $(this).closest('tr');
+
+        // Get input values from cells in row
+        var id = row.find('.id').text();
+
+        $.ajax({
+          url: 'http://localhost:8080/teachers/' + id,
+          type: 'DELETE',
+          success: function() {
+              location.reload();
+          }
+        });
+
+      });
+
+    </script>
+
+  </body>
+</html>
