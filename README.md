@@ -78,19 +78,19 @@ The following endpoints are available for the Student and Teacher resources:
 
 ### Student Endpoints
 
-- `GET /api/students`: Get all students.
-- `GET /api/students/{id}`: Get a student by ID.
-- `POST /api/students`: Create a new student.
-- `PUT /api/students/{id}`: Update an existing student.
-- `DELETE /api/students/{id}`: Delete a student.
+- `GET http://localhost:8000/students/`: Get all students.
+- `GET http://localhost:8000/students/{id}`: Get a student by ID.
+- `POST http://localhost:8000/students/`: Create a new student.
+- `PUT http://localhost:8000/students/{id}`: Update an existing student.
+- `DELETE http://localhost:8000/students/{id}`: Delete a student.
 
 ### Teacher Endpoints
 
-- `GET /api/teachers`: Get all teachers.
-- `GET /api/teachers/{id}`: Get a teacher by ID.
-- `POST /api/teachers`: Create a new teacher.
-- `PUT /api/teachers/{id}`: Update an existing teacher.
-- `DELETE /api/teachers/{id}`: Delete a teacher.
+- `GET http://localhost:8000/teachers/`: Get all teachers.
+- `GET http://localhost:8000/teachers/{id}`: Get a teacher by ID.
+- `POST http://localhost:8000/teachers/`: Create a new teacher.
+- `PUT http://localhost:8000/teachers/{id}`: Update an existing teacher.
+- `DELETE http://localhost:8000/api/teachers/{id}`: Delete a teacher.
 
 ## Testing Framework
 
