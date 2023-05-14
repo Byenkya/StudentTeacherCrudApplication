@@ -3,9 +3,7 @@ package com.Student_Teacher.ManagementApplication.repository;
 import com.Student_Teacher.ManagementApplication.model.Student;
 import com.Student_Teacher.ManagementApplication.model.Teacher;
 import org.springframework.data.jpa.repository.JpaRepository;
-
 import java.util.List;
-
 public interface TeacherRepository extends JpaRepository<Teacher, Long> {
     List<Teacher> findByStudentsContains(Student student);
 }

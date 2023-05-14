@@ -8,23 +8,18 @@ import com.Student_Teacher.ManagementApplication.repository.TeacherRepository;
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.ArrayList;
 import java.util.List;
-
 @Service
 @Transactional
 public class TeacherService {
     @Autowired
     private TeacherRepository teacherRepository;
-
     @Autowired
     StudentRepository studentRepository;
-
     public List<Teacher> getTeachers(){
         return teacherRepository.findAll();
     }
-
     public void saveTeacher(TeacherDetails teacherDetails) {
         // Fetch the managed student objects from the database and update their fields
         List<Student> updatedStudents = new ArrayList<>();
@@ -44,7 +39,6 @@ public class TeacherService {
         // save the updated teacher object
         teacherRepository.save(teacherDetails.getTeacher());
     }
-
     public void updateTeacher(TeacherDetails teacherUpdateDetails) {
         Teacher teacher = teacherRepository.findById(teacherUpdateDetails.getTeacher().getId()).get();
         try {
@@ -54,20 +48,17 @@ public class TeacherService {
         } catch (Exception e) {
             System.out.println("Error while updating teacher information: " + e.getMessage());
         }
-
     }
 
     public Teacher getTeacher(Long id){
         return teacherRepository.findById(id).get();
     }
-
-    public void deleteTeacher(Long id){
+    public void deleteTeacher(Long id) {
         Teacher teacher = teacherRepository.findById(id).get();
         List<Student> studentsCopy = new ArrayList<>(teacher.getStudents());
         for (Student student : studentsCopy) {
             teacher.getStudents().remove(student);
         }
-
         teacherRepository.deleteById(id);
 
     }

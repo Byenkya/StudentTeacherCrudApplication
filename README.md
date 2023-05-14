@@ -1,6 +1,11 @@
 # Student-Teacher Management Application
 
 The Student-Teacher Management Application is a web-based application built using Spring Boot, Spring Data, and jQuery. It provides functionality to manage students and teachers in a database. Students and teachers are stored in a MySQL database, and the application communicates with the server via a REST API.
+## Student section of the Application
+![Code Directory Structure](project-images/student_section.png)
+
+## Teacher section of the Application
+![Code Directory Structure](project-images/teacher_section.png)
 
 ## Application Description
 
@@ -9,6 +14,9 @@ The Student-Teacher Management Application allows you to perform the following o
 - Create, read, update, and delete students
 - Create, read, update, and delete teachers
 - Associate students with teachers
+
+## Application Architectural Pattern
+![Code Directory Structure](project-images/architectural_pattern.png)
 
 ## Database Setup
 
@@ -19,10 +27,9 @@ To set up the database for the application, follow these steps:
 3. Update the database configuration in the `application.properties` file located in the `src/main/resources` directory with your MySQL database connection details. The file should have the following details as show below:
 ```
     spring.datasource.url=jdbc:mysql://localhost:3306/myDB
-    spring.datasource.username=root
-    spring.datasource.password=root
+    spring.datasource.username=your-username
+    spring.datasource.password=your-password
 ```
-
 ## Database Models
 
 The application uses two main models:
@@ -60,10 +67,11 @@ CREATE TABLE teacher_student (
   FOREIGN KEY (teacher_id) REFERENCES teachers(id),
   FOREIGN KEY (student_id) REFERENCES students(id)
 );
+```
 
+## Note:
 The teacher_student table will be used as a join table to cater for the one to many relationship between the student and teacher entity. It has two columns: teacher_id and student_id, both of which are foreign keys to the teachers and students tables, respectively. The PRIMARY KEY constraint ensures that each combination of teacher_id and student_id is unique.
 
-```
 ## Database Dump
 
 A database dump file is available at `database_dump.sql`. You can import this file into your MySQL database to create the required tables and sample data using the following command below:
@@ -78,19 +86,19 @@ The following endpoints are available for the Student and Teacher resources:
 
 ### Student Endpoints
 
-- `GET http://localhost:8000/students/`: Get all students.
-- `GET http://localhost:8000/students/{id}`: Get a student by ID.
-- `POST http://localhost:8000/students/`: Create a new student.
-- `PUT http://localhost:8000/students/{id}`: Update an existing student.
-- `DELETE http://localhost:8000/students/{id}`: Delete a student.
+- `GET http://localhost:8000/api/v1/students`: Get all students.
+- `GET http://localhost:8000/api/v1/students/{id}`: Get a student by ID.
+- `POST http://localhost:8000/api/v1/students`: Create a new student.
+- `PUT http://localhost:8000/api/v1/students/{id}`: Update an existing student.
+- `DELETE http://localhost:8000/api/v1/students/{id}`: Delete a student.
 
 ### Teacher Endpoints
 
-- `GET http://localhost:8000/teachers/`: Get all teachers.
-- `GET http://localhost:8000/teachers/{id}`: Get a teacher by ID.
-- `POST http://localhost:8000/teachers/`: Create a new teacher.
-- `PUT http://localhost:8000/teachers/{id}`: Update an existing teacher.
-- `DELETE http://localhost:8000/api/teachers/{id}`: Delete a teacher.
+- `GET http://localhost:8000/api/v1/teachers`: Get all teachers.
+- `GET http://localhost:8000/api/v1/teachers/{id}`: Get a teacher by ID.
+- `POST http://localhost:8000/api/v1/teachers`: Create a new teacher.
+- `PUT http://localhost:8000/api/v1/teachers/{id}`: Update an existing teacher.
+- `DELETE http://localhost:8000/api/v1/teachers/{id}`: Delete a teacher.
 
 ## Testing Framework
 

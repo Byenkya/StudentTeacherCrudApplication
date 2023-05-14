@@ -13,7 +13,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -21,13 +20,11 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.NoSuchElementException;
-
 import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -35,21 +32,15 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
 @RunWith(MockitoJUnitRunner.class)
 public class StudentControllerTest {
     private MockMvc mockMvc;
-
     ObjectMapper objectMapper = new ObjectMapper();
     ObjectWriter objectWriter = objectMapper.writer();
-
     @Mock
     private StudentRepository studentRepository;
-
-
     @Mock
     private StudentService studentService;
-
     @InjectMocks
     private StudentController studentController;
 
@@ -57,13 +48,11 @@ public class StudentControllerTest {
     Student student1 = new Student(  "Micheal", "Ocen");
     Student student2 = new Student("Gwakamola", "Chereyo");
     Student student3 = new Student("Stephen", "Sejjussa");
-
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         this.mockMvc = MockMvcBuilders.standaloneSetup(studentController).build();
     }
-
     @Test
     public void testListStudents() throws Exception {
         // Arrange
@@ -74,13 +63,12 @@ public class StudentControllerTest {
 
         // Assert
         mockMvc.perform(MockMvcRequestBuilders
-                .get("/students/")
+                .get("/api/v1/students")
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[2].name", is("Stephen")));
     }
-
     @Test
     public void testGetExistingStudent() throws Exception {
         // Arrange
@@ -92,7 +80,6 @@ public class StudentControllerTest {
         // Assert
         assertEquals(HttpStatus.OK, response.getStatusCode());
         assertEquals(student1, response.getBody());
-
     }
 
 

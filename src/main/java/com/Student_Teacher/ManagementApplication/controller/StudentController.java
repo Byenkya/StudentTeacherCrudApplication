@@ -6,30 +6,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.net.URI;
 import java.util.List;
 import java.util.NoSuchElementException;
-
 @RestController
-@RequestMapping("/students")
+@RequestMapping("api/v1/students")
 public class StudentController {
-//    private final StudentService studentService;
-//
-//    @Autowired
-//    public StudentController(StudentService studentService) {
-//        this.studentService = studentService;
-//    }
-
     @Autowired
     StudentService studentService;
-
-
-    @GetMapping("/")
+    @GetMapping("")
     public List<Student> listStudents() {
         return studentService.listStudents();
     }
-
     @GetMapping("/{id}")
     public ResponseEntity<Student> get(@PathVariable Long id) {
         try {
@@ -39,8 +27,7 @@ public class StudentController {
             return new ResponseEntity<Student>(HttpStatus.NOT_FOUND);
         }
     }
-
-    @PostMapping("/")
+    @PostMapping("")
     public ResponseEntity<Student> add(@RequestBody Student student) {
         try {
             Student savedStudent = studentService.saveStudent(student);
@@ -48,9 +35,7 @@ public class StudentController {
         } catch (NoSuchElementException e) {
             return new ResponseEntity<Student>(HttpStatus.NOT_FOUND);
         }
-
     }
-
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@RequestBody Student student, @PathVariable Long id) {
         try {
@@ -63,7 +48,6 @@ public class StudentController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
-
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) { studentService.deleteStudent(id); }
 }

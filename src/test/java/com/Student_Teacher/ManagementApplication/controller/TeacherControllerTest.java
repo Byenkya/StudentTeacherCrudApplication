@@ -19,51 +19,39 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-
 import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import java.util.NoSuchElementException;
-
 @RunWith(MockitoJUnitRunner.class)
 public class TeacherControllerTest {
     private MockMvc mockMvc;
-
     ObjectMapper objectMapper = new ObjectMapper();
     ObjectWriter objectWriter = objectMapper.writer();
-
     @Mock
     private TeacherRepository teacherRepository;
-
     @Mock
     private TeacherService teacherService;
-
     @InjectMocks
     private TeacherController teacherController;
 
-
-
+    // records to test with
     Teacher teacher1 = new Teacher("Masaba John");
     Teacher teacher2 = new Teacher("Odong Sam");
 
-    // records to test with
     Student student1 = new Student(  "Micheal", "Ocen");
     Student student2 = new Student("Gwakamola", "Chereyo");
     Student student3 = new Student("Stephen", "Sejjussa");
-
     ArrayList<Student> students = new ArrayList<>(Arrays.asList(student1, student2, student3));
     TeacherDetails teacherDetails = new TeacherDetails(teacher1, students);
-
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         this.mockMvc = MockMvcBuilders.standaloneSetup(teacherController).build();
     }
-
     @Test
     public void testListTeachers() {
         // Arrange
@@ -77,7 +65,6 @@ public class TeacherControllerTest {
         assertEquals(teachers, result);
         verify(teacherService, times(1)).getTeachers();
     }
-
     @Test
     public void testGetExistingTeacher() {
         // Arrange
@@ -105,7 +92,6 @@ public class TeacherControllerTest {
         assertEquals(expectedResponse, actualResponse);
         verify(teacherService, times(1)).getTeacher(2L);
     }
-
     @Test
     public void testCreateTeacher() {
         // Arrange
@@ -119,7 +105,6 @@ public class TeacherControllerTest {
         assertEquals(expectedResponse, actualResponse);
         verify(teacherService, times(1)).saveTeacher(teacherDetails);
     }
-
     @Test
     public void testUpdateExistingTeacher() {
         // Arrange
@@ -135,7 +120,6 @@ public class TeacherControllerTest {
         verify(teacherService, times(1)).getTeacher(teacher1.getId());
         verify(teacherService, times(1)).updateTeacher(teacherDetails);
     }
-
     @Test
     public void testDeleteTeacher() {
         // Call the delete() method of the TeacherController with a teacher ID

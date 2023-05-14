@@ -6,11 +6,13 @@
   <!-- Bootstrap CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.4.1/dist/css/bootstrap.min.css" 
     integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-
 </head>
   <body>
     <div id="main" style="margin-left: 450px; margin-right: 450px;"> 
       <h1>Student and Teacher Management Application</h1><hr/>
+      <!-- Student Section -->
+
+      <!-- Update student form -->
       <div id="updateForm" style="display: none;">
         <h4>Update Student </h4>
         <form id="change-form">
@@ -34,6 +36,8 @@
         </thead>
         <tbody></tbody>
       </table>
+
+      <!-- Add student form -->
       <h4>Add Student</h4>
       <form id="update-student-form">
         <div class="form-group">
@@ -50,6 +54,7 @@
       </form>
       <hr/>
 
+      <!-- Teacher Section -->
       <h3>Teachers</h3><hr/>
       <div id="update-teacher-details">
         <h4 id="update-title" class="text-primary"></h4>
@@ -66,6 +71,7 @@
           <tbody class="text-primary"></tbody>
         </table><hr/>
         
+        <!-- Add more students to a teacher -->
         <h4> Add more students to this teacher</h4>
         <table id="add-more-students" class="table table-striped table-bordered">
           <thead>
@@ -86,6 +92,8 @@
         </form>
         <hr/>
       </div>
+
+      <!-- List of teachers -->
       <h4>List of Teachers with their students</h4>
       <table id="teacher-table" class="table table-striped table-bordered">
         <thead>
@@ -99,6 +107,7 @@
         <tbody></tbody>
       </table>
       <hr/>
+      
       <div id="add-teacherSection">
         <h3>Add Teacher</h3>
         <h6> Select Students To Add To Teacher </h6>
@@ -115,6 +124,8 @@
           <tbody></tbody>
         </table>
         <br/>
+
+        <!-- selected students -->
         <div id="select-students" style="display: none;">
           <h3>The following are the students you have selected: </h3><hr/>
           <table id="students-added" class="table table-striped table-bordered">
@@ -129,7 +140,9 @@
             <tbody></tbody>
           </table>
         </div>
-        <form>
+
+        <!-- Add teacher form -->
+        <form style="margin-bottom: 50px;">
           <div class="form-group">
             <label for="teacher-name">Name:</label>
             <input type="text" class="form-control" id="teacher-name" aria-describedby="emailHelp">
@@ -138,11 +151,8 @@
         </form>
       </div>
     </div>
-    
-  
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-
       var studentList = [];
       var studentToBeAddedToTeacherList = [];
       var allTeachers = [];
@@ -168,17 +178,17 @@
       function loadStudents() {
         return new Promise(function(resolve, reject) {
           $.ajax({
-            url: 'http://localhost:8080/students/',
+            url: 'http://localhost:8080/api/v1/students',
             type: 'GET',
             success: function(students) {
               studentList = students;
-              console.log(students);
+
               students.forEach(function(student) {
-                $('#student-table tbody').append('<tr><td class="id">' + student.id + '</td><td class="name">' +
-                  student.name + '</td><td class="surname">' + student.surname +
-                  '</td><td><button class="update-student btn btn-secondary" data-id="' + student.id + '">Update</button></td>' +
-                  '<td><button class="delete-student btn btn-danger" data-id="' + student.id + '">Delete</button></td></tr>'
+                $('#student-table tbody').append('<tr><td class="id">' + student.id + '</td><td class="name">' + student.name + 
+                  '</td><td class="surname">' + student.surname + '</td><td><button class="update-student btn btn-secondary" data-id="' + student.id + 
+                  '">Update</button></td>' + '<td><button class="delete-student btn btn-danger" data-id="' + student.id + '">Delete</button></td></tr>'
                 );
+
               });
               resolve();
             },
@@ -192,22 +202,27 @@
       // Load teachers into table
       function loadTeachers() {
         $.ajax({
-            url: 'http://localhost:8080/teachers/',
+            url: 'http://localhost:8080/api/v1/teachers',
             type: 'GET',
             success: function(teachers) {
                 $('#update-teacher-details').hide();
                 allTeachers = teachers;
+
                 teachers.forEach(function(teacher) {
                   var teacherStudentList = '';
+
                   teacher.students.forEach(function(student) {
                       const index = studentList.findIndex(std => std.id === student.id);
+
                       if (index > -1) {
                         studentList.splice(index, 1);
                       }
+
                       teacherStudentList += '<li>' + student.name + ' ' + student.surname + '</li>';
                   });
 
                   teacherStudentList = teacherStudentList.slice(0, -2);
+
                   $('#teacher-table tbody').append(
                     '<tr><td class="id">' + teacher.id + '</td><td>' + teacher.name + '</td><td><ul>' + teacherStudentList + 
                     '</ul></td><td><button class="update-teacher btn btn-secondary" data-id="' + teacher.id + '">Update</button></td>' +
@@ -216,9 +231,9 @@
                 });
             
                 studentList.forEach(function(student) {
-                  $('#students-to-add-table tbody').append('<tr><td class="id">' + student.id + '</td><td class="name">' +
-                    student.name + '</td><td class="surname">' + student.surname +
-                    '<td><button class="add-student btn btn-primary" data-id="' + student.id + '">Add Student</button></td></tr>'
+                  $('#students-to-add-table tbody').append('<tr><td class="id">' + student.id + '</td><td class="name">' + student.name + 
+                    '</td><td class="surname">' + student.surname + '<td><button class="add-student btn btn-primary" data-id="' + student.id + 
+                    '">Add Student</button></td></tr>'
                   );
 
                 });
@@ -234,27 +249,29 @@
 
         if(name !== "" && surname !== "") {
           $.ajax({
-            url: 'http://localhost:8080/students/',
+            url: 'http://localhost:8080/api/v1/students',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify({name: name, surname: surname}),
             success: function(student) {
                 studentList.push(student);
-                $('#student-table tbody').append('<tr><td class="id">' + student.id + '</td><td class="name">' +
-                  student.name + '</td><td class="surname">' + student.surname +
-                  '</td><td><button class="update-student btn btn-secondary" data-id="' + student.id + '">Update</button></td>' +
-                  '<td><button class="delete-student btn btn-danger" data-id="' + student.id + '">Delete</button></td></tr>'
+
+                $('#student-table tbody').append('<tr><td class="id">' + student.id + '</td><td class="name">' + student.name + 
+                  '</td><td class="surname">' + student.surname + '</td><td><button class="update-student btn btn-secondary" data-id="' + 
+                  student.id + '">Update</button></td>' + '<td><button class="delete-student btn btn-danger" data-id="' + student.id + 
+                  '">Delete</button></td></tr>'
                 );
 
-                $('#students-to-add-table tbody').append('<tr><td class="id">' + student.id + '</td><td class="name">' +
-                    student.name + '</td><td class="surname">' + student.surname +
-                    '<td><button class="add-student btn btn-primary" data-id="' + student.id + '">Add Student</button></td></tr>'
+                $('#students-to-add-table tbody').append('<tr><td class="id">' + student.id + '</td><td class="name">' + student.name + 
+                  '</td><td class="surname">' + student.surname + '<td><button class="add-student btn btn-primary" data-id="' + student.id + 
+                  '">Add Student</button></td></tr>'
                 );
 
                 $('#student-name').val('');
                 $('#student-surname').val('');
             }
           });
+
         } else {
           alert("name and surname are required");
         }
@@ -303,7 +320,7 @@
           // Send AJAX request to server to update student data
           $.ajax({
             type: 'PUT',
-            url: 'http://localhost:8080/students/' + id,
+            url: 'http://localhost:8080/api/v1/students/' + id,
             contentType: 'application/json',
             data: JSON.stringify({
               name: name,
@@ -320,8 +337,9 @@
       // Delete student on button click
       $('#student-table tbody').on('click', '.delete-student', function(event) {
           var id = $(this).data('id');
+
           $.ajax({
-              url: 'http://localhost:8080/students/' + id,
+              url: 'http://localhost:8080/api/v1/students/' + id,
               type: 'DELETE',
               success: function() {
                   location.reload();
@@ -408,6 +426,7 @@
           // hide the selected layout
           $('#select-students').hide();
         }
+
       });
 
       // Add a teacher 
@@ -417,7 +436,7 @@
 
         if(name !== "") {
           $.ajax({
-            url: 'http://localhost:8080/teachers/',
+            url: 'http://localhost:8080/api/v1/teachers',
             type: 'POST',
             contentType: 'application/json',
             data: JSON.stringify(
@@ -464,9 +483,8 @@
         // populate teacher's student
         teacherDetails.students.forEach(function(student) {
           $('#students-attached tbody').append(
-            '<tr><td class="id">' + student.id + '</td><td class="name">' +
-            student.name + '</td><td class="surname">' + student.surname + '<td><button class="removefrom-teacher btn btn-danger" data-id="' + 
-            student.id + '">Remove</button></td></tr>'
+            '<tr><td class="id">' + student.id + '</td><td class="name">' + student.name + '</td><td class="surname">' + 
+            student.surname + '<td><button class="removefrom-teacher btn btn-danger" data-id="' + student.id + '">Remove</button></td></tr>'
           );
         })
 
@@ -474,10 +492,10 @@
         $('#add-more-students tbody').empty();
         studentList.forEach(function(student) {
           $('#add-more-students tbody').append(
-            '<tr><td class="id">' + student.id + '</td><td class="name">' +
-              student.name + '</td><td class="surname">' + student.surname + '<td><button class="addTo-teacher btn btn-primary" data-id="' + 
-              student.id + '">Add</button></td></tr>'
+            '<tr><td class="id">' + student.id + '</td><td class="name">' + student.name + '</td><td class="surname">' + student.surname + 
+            '<td><button class="addTo-teacher btn btn-primary" data-id="' + student.id + '">Add</button></td></tr>'
           );
+
         });
       })
 
@@ -506,13 +524,13 @@
 
         // added the student to the displayed list of the ones that belong to the teacher
         $('#students-attached tbody').append(
-          '<tr><td class="id">' + id + '</td><td class="name">' +
-          name + '</td><td class="surname">' + surname + '<td><button class="removefrom-teacher btn btn-danger" data-id="' + 
-          id + '">Remove</button></td></tr>'
+          '<tr><td class="id">' + id + '</td><td class="name">' + name + '</td><td class="surname">' + surname + 
+          '<td><button class="removefrom-teacher btn btn-danger" data-id="' + id + '">Remove</button></td></tr>'
         );
 
         // remove the row of data
         row.remove();
+
       });
 
       // remove student from teacher
@@ -531,13 +549,13 @@
         }
 
         $('#add-more-students tbody').append(
-          '<tr><td class="id">' + id + '</td><td class="name">' +
-          name + '</td><td class="surname">' + surname + '<td><button class="addTo-teacher btn btn-primary" data-id="' + 
-          id + '">Add</button></td></tr>'
+          '<tr><td class="id">' + id + '</td><td class="name">' + name + '</td><td class="surname">' + surname + 
+          '<td><button class="addTo-teacher btn btn-primary" data-id="' + id + '">Add</button></td></tr>'
         );
 
         // remove row data
         row.remove();
+
       });
 
       // Handle form submission i.e update teacher
@@ -547,7 +565,7 @@
 
         if(name !== "") {
           $.ajax({
-            url: 'http://localhost:8080/teachers/' + selectedTeacher.id,
+            url: 'http://localhost:8080/api/v1/teachers/' + selectedTeacher.id,
             type: 'PUT',
             contentType: 'application/json',
             data: JSON.stringify(
@@ -563,6 +581,7 @@
         } else {
           alert("Teacher's name is required");
         }
+
       });
 
       // delete teacher
@@ -574,7 +593,7 @@
         var id = row.find('.id').text();
 
         $.ajax({
-          url: 'http://localhost:8080/teachers/' + id,
+          url: 'http://localhost:8080/api/v1/teachers/' + id,
           type: 'DELETE',
           success: function() {
               location.reload();
@@ -582,8 +601,6 @@
         });
 
       });
-
     </script>
-
   </body>
 </html>
