@@ -1,6 +1,7 @@
 package com.Student_Teacher.ManagementApplication.model;
 
 import java.util.List;
+
 public class TeacherDetails {
     Teacher teacher;
     List<Student> studentList;

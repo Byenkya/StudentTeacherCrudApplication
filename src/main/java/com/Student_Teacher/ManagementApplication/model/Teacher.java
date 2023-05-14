@@ -3,6 +3,7 @@ package com.Student_Teacher.ManagementApplication.model;
 import jakarta.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+
 @Entity
 @Table(name = "teachers")
 public class Teacher {

@@ -1,6 +1,7 @@
 package com.Student_Teacher.ManagementApplication.model;
 
 import jakarta.persistence.*;
+
 @Entity
 @Table(name = "students")
 public class Student {
