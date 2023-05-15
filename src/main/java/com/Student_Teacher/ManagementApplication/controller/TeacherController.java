@@ -13,10 +13,15 @@ import java.util.NoSuchElementException;
 @RestController
 @RequestMapping("api/v1/teachers")
 public class TeacherController {
+
     @Autowired
     TeacherService teacherService;
+
+    // Retrieve all teachers
     @GetMapping("")
     public List<Teacher> listTeachers() { return teacherService.getTeachers(); }
+
+    // Retrieve a teacher by ID
     @GetMapping("/{id}")
     public ResponseEntity<Teacher> get(@PathVariable Long id) {
         try {
@@ -26,6 +31,8 @@ public class TeacherController {
             return new ResponseEntity<Teacher>(HttpStatus.NOT_FOUND);
         }
     }
+
+    // Add a new teacher
     @PostMapping("")
     public ResponseEntity<?> createTeacher(@RequestBody TeacherDetails teacherDetails) {
         try {
@@ -35,6 +42,8 @@ public class TeacherController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    // Update an existing teacher
     @PutMapping("/{id}")
     public ResponseEntity<?> update(@RequestBody TeacherDetails teacherDetails, @PathVariable Long id){
         try {
@@ -47,6 +56,8 @@ public class TeacherController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
+
+    // Delete a teacher by ID
     @DeleteMapping("/{id}")
     public void delete(@PathVariable Long id) { teacherService.deleteTeacher(id); }
 }

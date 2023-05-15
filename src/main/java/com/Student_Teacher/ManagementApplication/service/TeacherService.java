@@ -14,13 +14,19 @@ import java.util.List;
 @Service
 @Transactional
 public class TeacherService {
+
     @Autowired
     private TeacherRepository teacherRepository;
+
     @Autowired
     StudentRepository studentRepository;
+
+    // Retrieves a list of all teachers
     public List<Teacher> getTeachers(){
         return teacherRepository.findAll();
     }
+
+    // Save a new Teacher
     public void saveTeacher(TeacherDetails teacherDetails) {
         // Fetch the managed student objects from the database and update their fields
         List<Student> updatedStudents = new ArrayList<>();
@@ -40,6 +46,8 @@ public class TeacherService {
         // save the updated teacher object
         teacherRepository.save(teacherDetails.getTeacher());
     }
+
+    // Updates a Teacher's Information
     public void updateTeacher(TeacherDetails teacherUpdateDetails) {
         Teacher teacher = teacherRepository.findById(teacherUpdateDetails.getTeacher().getId()).get();
         try {
@@ -51,9 +59,12 @@ public class TeacherService {
         }
     }
 
+    // Get a teacher by ID
     public Teacher getTeacher(Long id){
         return teacherRepository.findById(id).get();
     }
+
+    // Delete a teacher by ID
     public void deleteTeacher(Long id) {
         Teacher teacher = teacherRepository.findById(id).get();
         List<Student> studentsCopy = new ArrayList<>(teacher.getStudents());
@@ -61,6 +72,5 @@ public class TeacherService {
             teacher.getStudents().remove(student);
         }
         teacherRepository.deleteById(id);
-
     }
 }

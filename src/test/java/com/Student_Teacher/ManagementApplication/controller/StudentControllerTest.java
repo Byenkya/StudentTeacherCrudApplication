@@ -36,33 +36,45 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(MockitoJUnitRunner.class)
 public class StudentControllerTest {
     private MockMvc mockMvc;
+
     ObjectMapper objectMapper = new ObjectMapper();
+
     ObjectWriter objectWriter = objectMapper.writer();
+
     @Mock
     private StudentRepository studentRepository;
+
     @Mock
     private StudentService studentService;
+
     @InjectMocks
     private StudentController studentController;
 
-    // records to test with
+    // Records to test with
     Student student1 = new Student(  "Micheal", "Ocen");
+
     Student student2 = new Student("Gwakamola", "Chereyo");
+
     Student student3 = new Student("Stephen", "Sejjussa");
+
     @Before
     public void setup() {
         MockitoAnnotations.initMocks(this);
         this.mockMvc = MockMvcBuilders.standaloneSetup(studentController).build();
     }
+
     @Test
     public void testListStudents() throws Exception {
         // Arrange
+        // Creating a list of student records
         List<Student> records = new ArrayList<>(Arrays.asList(student1, student2, student3));
 
         // Act
+        // Mocking the behavior of studentController.listStudents() to return the list of records
         Mockito.when(studentController.listStudents()).thenReturn(records);
 
         // Assert
+        // Performing a GET request to the "/api/v1/students" endpoint and asserting the response
         mockMvc.perform(MockMvcRequestBuilders
                 .get("/api/v1/students")
                 .contentType(MediaType.APPLICATION_JSON))
@@ -70,59 +82,83 @@ public class StudentControllerTest {
                 .andExpect(MockMvcResultMatchers.jsonPath("$", hasSize(3)))
                 .andExpect(jsonPath("$[2].name", is("Stephen")));
     }
+
     @Test
     public void testGetExistingStudent() throws Exception {
         // Arrange
+        // Mocking the behavior of studentService.getStudent() to return student1 when called with its ID
         Mockito.when(studentService.getStudent(student1.getId())).thenReturn(student1);
 
         // Act
+        // Invoking the get() method on the studentController with the ID of an existing student
         ResponseEntity<Student> response = studentController.get(student1.getId());
 
         // Assert
+        // Verifying that the HTTP response status code is HttpStatus.OK
         assertEquals(HttpStatus.OK, response.getStatusCode());
+
+        // Verifying that the body of the response contains the expected student1 object
         assertEquals(student1, response.getBody());
     }
-
 
     @Test
     public void testGetNonExistingStudent() {
         // Arrange
+        // Mocking the behavior of studentService.getStudent() to throw NoSuchElementException
         Mockito.when(studentService.getStudent(2L)).thenThrow(NoSuchElementException.class);
 
         // Act
+        // Invoking the get() method on the studentController with the ID of a non-existing student
         ResponseEntity<Student> response = studentController.get(2L);
 
         // Assert
+        // Verifying that the HTTP response status code is HttpStatus.NOT_FOUND
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
     @Test
     public void testAddStudent() {
         // Arrange
+        // Mocking the behavior of studentService.saveStudent() to return student1 when called with student1 object
         Mockito.when(studentService.saveStudent(student1)).thenReturn(student1);
 
         // Act
+        // Invoking the add() method on the studentController with student1 object
         ResponseEntity<Student> response = studentController.add(student1);
 
         // Assert
+        // Verifying that the HTTP response status code is HttpStatus.CREATED
         assertEquals(HttpStatus.CREATED, response.getStatusCode());
+
+        // Verifying that the body of the response contains the expected student1 object
         assertEquals(student1, response.getBody());
+
+        // Verifying that the response headers contain the "Location" header
         assertTrue(response.getHeaders().containsKey("Location"));
+
+        // Verifying that the "Location" header value is the expected URI
         assertEquals(URI.create("/students/" + student1.getId()), response.getHeaders().getLocation());
+
+        // Verifying that the saveStudent() method of studentService is called exactly once with student1 object
         verify(studentService, times(1)).saveStudent(student1);
     }
 
     @Test
     public void testUpdateExistingStudent() {
         // Arrange
+        // Mocking the behavior of studentService.getStudent() to return student1 when called with its ID
         Mockito.when(studentService.getStudent(student1.getId())).thenReturn(student1);
 
         // Act
+        // Creating expected and actual response entities with HttpStatus.OK
         ResponseEntity<?> expectedResponse = new ResponseEntity<>(HttpStatus.OK);
         ResponseEntity<?> actualResponse = studentController.update(student1, student1.getId());
 
         // Assert
+        // Verifying that the actual response matches the expected response
         assertEquals(expectedResponse, actualResponse);
+
+        // Verifying that the getStudent() method of studentService is called exactly once with the ID of student1
         verify(studentService, times(1)).getStudent(student1.getId());
     }
 

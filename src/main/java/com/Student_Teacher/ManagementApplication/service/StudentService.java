@@ -12,20 +12,30 @@ import java.util.List;
 @Service
 @Transactional
 public class StudentService {
+
     @Autowired
     private StudentRepository studentRepository;
+
     @Autowired
     private TeacherRepository teacherRepository;
+
+    // Retrieves a list of all students
     public List<Student> listStudents() {
         return studentRepository.findAll();
     }
+
+    // Saves a new student
     public Student saveStudent(Student student) {
 
         return studentRepository.save(student);
     }
+
+    // Retrieves a student by ID
     public Student getStudent(Long id) {
         return studentRepository.findById(id).get();
     }
+
+    // Deletes a student by ID
     public void deleteStudent(Long id) {
         Student student = studentRepository.findById(id).get();
         List<Teacher> teachers = teacherRepository.findByStudentsContains(student);
