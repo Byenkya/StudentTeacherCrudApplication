@@ -18,6 +18,11 @@ The Student-Teacher Management Application allows you to perform the following o
 ## Application Architectural Pattern
 ![Code Directory Structure](project-images/architectural_pattern.png)
 
+## Application Setup
+
+Clone the Git repository: Open your terminal or Git client and navigate to the desired directory where you want to clone the repository. Use the following command to clone the repository:
+      ```git clone  https://github.com/Byenkya/StudentTeacherCrudApplication```.
+
 ## Database Setup
 
 To set up the database for the application, follow these steps:
@@ -82,14 +87,12 @@ mysql -u <username> -p <database_name> < database_dump.sql
 ```
 
 ## How to run the Application
-1. Clone the Git repository: Open your terminal or Git client and navigate to the desired directory where you want to clone the repository. Use the following command to clone the repository:
-```git clone  https://github.com/Byenkya/StudentTeacherCrudApplication```.
-2. Open IntelliJ IDEA: Launch IntelliJ IDEA on your machine.
-3. Import the project: In IntelliJ IDEA, click on "Open" or select "File" -> "Open" from the menu. Navigate to the directory where you cloned the Git repository and select it to import the project.
-4. Build the project: Once the project is imported, IntelliJ IDEA will automatically start building the project and resolving dependencies. Wait for the build process to complete.
-5. Set up the Run Configuration: Right-click on the ManagementApplication class in the project structure or editor and select "Run 'ManagementApplication.main()'". This will create a run configuration for running the Spring Boot application.
-6. Run the application: Click on the green "Play" button or press Shift+F10 to run the Spring Boot application using the created run configuration.
-7. Verify application startup: IntelliJ IDEA will start the application, and you should see the application logs in the console. Look for a log message indicating that the application has started successfully. It will typically include the URL where the application is running (e.g., http://localhost:8080).
+1. Open IntelliJ IDEA: Launch IntelliJ IDEA on your machine.
+2. Import the project: In IntelliJ IDEA, click on "Open" or select "File" -> "Open" from the menu. Navigate to the directory where you cloned the Git repository and select it to import the project.
+3. Build the project: Once the project is imported, IntelliJ IDEA will automatically start building the project and resolving dependencies. Wait for the build process to complete.
+4. Set up the Run Configuration: Right-click on the ManagementApplication class in the project structure or editor and select "Run 'ManagementApplication.main()'". This will create a run configuration for running the Spring Boot application.
+5. Run the application: Click on the green "Play" button or press Shift+F10 to run the Spring Boot application using the created run configuration.
+6. Verify application startup: IntelliJ IDEA will start the application, and you should see the application logs in the console. Look for a log message indicating that the application has started successfully. It will typically include the URL where the application is running (e.g., http://localhost:8080).
 
 
 ## REST API Endpoints
