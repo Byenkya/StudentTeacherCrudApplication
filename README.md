@@ -23,8 +23,9 @@ The Student-Teacher Management Application allows you to perform the following o
 To set up the database for the application, follow these steps:
 
 1. Install MySQL i.e (5.7) if you haven't already.
-2. Create a new database in MySQL called **myDB**.
-3. Update the database configuration in the `application.properties` file located in the `src/main/resources` directory with your MySQL database connection details. The file should have the following details as show below:
+2. Access mysql prompt by typing ```mysql -u <username> -p ```.
+3. Create a new database in MySQL called **myDB**.
+4. Update the database configuration in the `application.properties` file located in the `src/main/resources` directory with your MySQL database connection details. The file should have the following details as show below:
 ```
     spring.datasource.url=jdbc:mysql://localhost:3306/myDB
     spring.datasource.username=your-username
